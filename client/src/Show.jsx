@@ -1,39 +1,30 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-const API_URL = 'http://localhost:3010/uploads/' // ruta donde se almacenan los archivos. Pasar a archivo .env para poder reemplazarlo en todos los archivos
+const API_URL = 'http://localhost:3010/uploads/';
 
-/**
- * Componente para mostrar los archivos subidos. Cuando se hace click en un archivo, se muestra si es una imagen, o se descarga el archivo si es otro tipo de archivo
- * @param {Array} files - Lista de archivos subidos
- */
 const ShowUploadedFiles = ({ files }) => {
-    const [selectedFile, setSelectedFile] = useState(null) // estado para mostrar la imagen o el archivo seleccionado
+    const [selectedFile, setSelectedFile] = useState(null);
 
-    /**
-     * Función para obtener el archivo. Si es una imagen, se muestra la imagen. Si es otro tipo de archivo, se descarga el archivo
-     * @param {*} fileName  - Nombre del archivo
-     * @returns  - No devuelve nada
-     */
     async function getFile(fileName) {
-        const url = `${API_URL}${fileName}` // url del archivo
-        const file = await fetch(url) // obtenemos el archivo
-        const blob = await file.blob() // lo convertimos en un blob. Esto es necesario para mostrar la imagen o descargar el archivo
-        const fileUrl = URL.createObjectURL(blob) // crea una URL para mostrar la imagen o descargar el archivo
-        // si es una imagen
-        if (blob.type.includes('image')) {
-            setSelectedFile(fileUrl)   // se guarda la URL generada con el blob
-            return
+        const url = `${API_URL}${fileName}`;
+        const file = await fetch(url);
+        if(!file.ok) {
+            console.error("archivo no encontrado");
+            return;
         }
-        else {
-            // descargamos el archivo
-            const link = document.createElement('a') // creamos un enlace para descargar el archivo
-            link.href = fileUrl // asignamos la URL generada con el blob
-            link.download = fileName // asignamos el nombre del archivo
-            link.click() // descargamos el archivo
-            URL.revokeObjectURL(fileUrl) // liberamos la URL generada
-            return
+        const blob = await file.blob();
+        const fileUrl = URL.createObjectURL(blob);
+        if (blob.type.includes('image')) {
+            setSelectedFile(fileUrl);
+        } else {
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.download = fileName;
+            link.click();
+            URL.revokeObjectURL(fileUrl);
         }
     }
+
     return (
         <div>
             <h1>Archivos subidos</h1>
@@ -46,7 +37,7 @@ const ShowUploadedFiles = ({ files }) => {
             </ul>
             {selectedFile && <img src={selectedFile} alt="Uploaded" />}
         </div>
-    )
-}
+    );
+};
 
-export default ShowUploadedFiles
+export default ShowUploadedFiles;

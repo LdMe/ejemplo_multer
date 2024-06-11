@@ -1,36 +1,34 @@
 import Upload from "./Upload";
 import Show from "./Show";
-import './App.css'
+import './App.css';
 import { useEffect, useState } from "react";
 
-const API_URL = 'http://localhost:3010/uploads/'
+const API_URL = 'http://localhost:3010/uploads/';
 
-/**
- * Componente principal
- * Se encarga de mostrar los archivos subidos y de subir nuevos archivos
- */
 function App() {
-    const [uploadedFiles, setUploadedFiles] = useState([]) // lista de archivos subidos
-    useEffect(() => { // cuando se monta el componente, obtenemos la lista de archivos subidos
-        getFiles()
-    }, [])
+    const [uploadedFiles, setUploadedFiles] = useState([]);
 
-    /**
-     * Obtiene la lista de archivos subidos por el usuario. Cada vez que se suba un archivo, se actualiza la lista
-     */
+    useEffect(() => {
+        getFiles();
+    }, []);
+
     async function getFiles() {
-        const response = await fetch(API_URL) // obtenemos la lista de archivos subidos. Modificar en caso de usar autenticación por token o cookies
-        
-        const data = await response.json()
-        console.log("files", data)
-        setUploadedFiles(data) // actualizamos la lista
+        const response = await fetch(API_URL);
+        if(!response.ok) {
+            console.error("archivos no encontrados");
+            return;
+        }
+        const data = await response.json();
+        console.log("archivos", data);
+        setUploadedFiles(data);
     }
+
     return (
         <div className="App">
-            <Upload onUpload={getFiles}/>
-            <Show  files={uploadedFiles}/>
+            <Upload onUpload={getFiles} />
+            <Show files={uploadedFiles} />
         </div>
     );
 }
 
-export default App
+export default App;

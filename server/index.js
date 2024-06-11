@@ -1,66 +1,48 @@
 import express from 'express';
-import cors from 'cors'; // librería para permitir peticiones de otros origenes
-import upload from './multer.js'; // librería para subir archivos
-import fs from 'fs'; // librería para manejar archivos
+import cors from 'cors';
+import upload from './multer.js';
+import fs from 'fs';
 
 const app = express();
 const port = 3010;
 
-/**
- * Middleware falso para verificar se o usuário está autenticado y guardar los datos en req.user
- */
 const isAuthMiddleware = (req, res, next) => {
-    /*
-    Acciones necesarias para autenticar el usuario (jwt, etc)
-    */
-
-    /*...*/
-    
-    req.user = {_id: '122'} // TODO: cambiar por el usuario real que se autentique
-    next()
-}
-
+    req.user = {_id: '125'};
+    next();
+};
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/**
- * Endpoint para subir archivos
- */
 app.post('/upload', isAuthMiddleware, upload.single('file'), (req, res) => {
-    res.json({ // devolvemos un json con el nombre del archivo subido
+    res.json({
         fileName: req.fileName
     });
 });
 
-/**
- * Endpoint para obtener archivos subidos
- */
-app.get("/uploads/:file",isAuthMiddleware, (req, res) => {
-    const {  file } = req.params; // nombre del archivo en la ruta
-    const userId  = req.user._id; // sacamos el usuario de la petición, después de pasar por el middleware isAuthMiddleware
-    const filePath = `./uploads/${userId}/${file}`; // ruta donde se encuentra el archivo
-    if (!fs.existsSync(filePath)) { // si el archivo no existe
-        res.status(404).send("File not found"); // devolvemos un error
+app.get("/uploads/:file", isAuthMiddleware, (req, res) => {
+    const { file } = req.params;
+    const userId = req.user._id;
+    const filePath = `./uploads/${userId}/${file}`;
+    if (!fs.existsSync(filePath)) {
+        res.status(404).send("File not found");
         return;
     }
-    res.sendFile(filePath, { root: "." }); // devolvemos el archivo. Es necesario root: "." para que la ruta sea relativa
+    res.sendFile(filePath, { root: "." });
 });
 
-/**
- * Endpoint paara obtener la lista de archivos subidos por el usuario
- */
 app.get("/uploads", isAuthMiddleware, (req, res) => {
-    const userId  = req.user?._id; // sacamos el usuario de la petición, إ de pasar por el middleware isAuthMiddleware
-    const path = `./uploads/${userId}`; // ruta donde se encuentran los archivos
-    if (!fs.existsSync(path)) { // si el directorio no existe
-        res.status(404).send("Directory not found"); // devolvemos un error
+    const userId = req.user?._id;
+    const path = `./uploads/${userId}`;
+    if (!fs.existsSync(path)) {
+        res.status(404).send("Directory not found");
         return;
     }
-    const files = fs.readdirSync(path); // lista de archivos
-    res.json(files); // devolvemos la lista de archivos
+    const files = fs.readdirSync(path);
+    res.json(files);
 });
+
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
 });
