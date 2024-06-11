@@ -17,7 +17,7 @@
 ## Introducción
 Este proyecto es una guía paso a paso para crear una aplicación de subida de archivos utilizando React en el frontend y Node.js en el backend, con la ayuda de la librería multer para manejar las subidas de archivos en el servidor. 
 
-El objetivo principal es permitir a los usuarios subir archivos, listarlos y descargarlos, asegurando que solo puedan ver sus propios archivos. En caso de querer mostrar los archivos de todos los usuarios, se puede modificar el backend para permitirlo. Tmbién se podrían subir múltiples archivos a la vez, pero para simplificar el proyecto, se ha optado por subir un archivo a la vez.
+El objetivo principal es permitir a los usuarios subir archivos, listarlos y descargarlos, asegurando que solo puedan ver sus propios archivos. En caso de querer mostrar los archivos de todos los usuarios, se puede modificar el backend para permitirlo. También se podrían subir múltiples archivos a la vez, pero para simplificar el proyecto, se ha optado por subir un archivo a la vez.
 
  La aplicación incluye un middleware de autenticación falso para simular la autenticación del usuario, lo que permite adaptar fácilmente el sistema a casos reales de uso donde se requiera autenticación. Sin embargo, si no es necesario conocer los datos del usuario que sube el archivo, este middleware se puede eliminar.
 
@@ -31,15 +31,15 @@ Este archivo configura el servidor utilizando Express. Maneja los endpoints para
 
 Aspectos clave:
 
-1. Importaciones: Librerías necesarias para el servidor y manejo de archivos (`express`, `cors`, `multer`, `fs`).
+1. Importaciones: Librerías necesarias para el servidor y manejo de archivos (*express*, *cors*, *multer*, *fs*).
 2. Middleware de Autenticación: Simula la autenticación del usuario asignando un ID ficticio a req.user.
 3. Configuraciones de Express:
-    - cors(): Habilita CORS para permitir peticiones de otros orígenes.
-    - express.json() y express.urlencoded(): Parseo de JSON y datos urlencoded.
+    - *cors()*: Habilita CORS para permitir peticiones de otros orígenes.
+    - *express.json()* y *express.urlencoded()*: Parseo de JSON y datos urlencoded.
 4. Endpoints:
-    - POST /upload: Para subir un archivo.
-    - GET /uploads/:file: Para descargar un archivo específico.
-    - GET /uploads: Para listar todos los archivos subidos por el usuario.
+    - POST */upload*: Para subir un archivo.
+    - GET */uploads/*:file: Para descargar un archivo específico.
+    - GET */uploads*: Para listar todos los archivos subidos por el usuario.
 
 #### Código:
 
@@ -95,10 +95,10 @@ app.get("/uploads/:file",isAuthMiddleware, (req, res) => {
 });
 
 /**
- * Endpoint paara obtener la lista de archivos subidos por el usuario
+ * Endpoint para obtener la lista de archivos subidos por el usuario
  */
 app.get("/uploads", isAuthMiddleware, (req, res) => {
-    const userId  = req.user?._id; // sacamos el usuario de la petición, إ de pasar por el middleware isAuthMiddleware
+    const userId  = req.user?._id; // sacamos el usuario de la petición, asegurandonos de pasar por el middleware isAuthMiddleware.
     const path = `./uploads/${userId}`; // ruta donde se encuentran los archivos
     if (!fs.existsSync(path)) { // si el directorio no existe
         res.status(404).send("Directory not found"); // devolvemos un error
@@ -118,7 +118,7 @@ Este archivo configura multer para manejar la subida de archivos, especificando 
 
 Aspectos clave:
 
-1. Importaciones: Librerías multer y fs.
+1. Importaciones: Librerías *multer* y *fs*.
 2. Configuración de multer:
     - *destination*: Define la ruta de destino para los archivos subidos, creando directorios si no existen.
     - *filename*: Define el nombre del archivo, permitiendo la personalización.
@@ -330,7 +330,7 @@ function Upload({ onUpload }) {
    */
   async function upload(file) {
     const formData = new FormData() // FormData nos permite subir archivos
-    formData.append('fileName', fileName) // nuevo nombre del archivo. ¡Importante!, cualquier variable que queramos usar en multer debe ir antes del archivo para que multer la pueda leer
+    formData.append('fileName', fileName) // nuevo nombre del archivo. **Importante**, cualquier variable que queramos usar en multer debe ir antes del archivo para que multer la pueda leer
     formData.append('file', file) // añadimos el archivo
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -432,14 +432,14 @@ Con estos archivos, se puede crear una aplicación de subida de archivos con Rea
      npm run dev
      ```
 
-   - **Aplicación**:
+   - **Cliente**:
 
      ```bash
      cd client
      npm run dev
      ```
 
-Con estos pasos, se podrá acceder a la aplicación en `http://localhost:5173` y subir archivos al servidor en `http://localhost:3010/uploads/`. Si se desea cambiar el puerto del servidor, se puede modificar en el archivo `server/index.js` y en los archivos de la aplicación React.
+Con estos pasos, se podrá acceder a la aplicación de React en `http://localhost:5173` y subir archivos al servidor en `http://localhost:3010/uploads/`. Si se desea cambiar el puerto del servidor, se puede modificar en el archivo `server/index.js` y en los archivos de la aplicación React.
 
 ## Referencias
 - [Multer | npm](https://www.npmjs.com/package/multer)
