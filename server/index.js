@@ -16,7 +16,7 @@ const isAuthMiddleware = (req, res, next) => {
 
     /*...*/
     
-    req.user = {_id: '120'} // TODO: cambiar por el usuario real que se autentique
+    req.user = {_id: '122'} // TODO: cambiar por el usuario real que se autentique
     next()
 }
 
@@ -46,6 +46,20 @@ app.get("/uploads/:file",isAuthMiddleware, (req, res) => {
         return;
     }
     res.sendFile(filePath, { root: "." }); // devolvemos el archivo. Es necesario root: "." para que la ruta sea relativa
+});
+
+/**
+ * Endpoint paara obtener la lista de archivos subidos por el usuario
+ */
+app.get("/uploads", isAuthMiddleware, (req, res) => {
+    const userId  = req.user?._id; // sacamos el usuario de la petición, إ de pasar por el middleware isAuthMiddleware
+    const path = `./uploads/${userId}`; // ruta donde se encuentran los archivos
+    if (!fs.existsSync(path)) { // si el directorio no existe
+        res.status(404).send("Directory not found"); // devolvemos un error
+        return;
+    }
+    const files = fs.readdirSync(path); // lista de archivos
+    res.json(files); // devolvemos la lista de archivos
 });
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
