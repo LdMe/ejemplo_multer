@@ -39,7 +39,7 @@ app.post('/upload', isAuthMiddleware, upload.single('file'), (req, res) => {
  */
 app.get("/uploads/:file",isAuthMiddleware, (req, res) => {
     const {  file } = req.params; // nombre del archivo en la ruta
-    const userId  = req.user?._id; // sacamos el usuario de la petición, después de pasar por el middleware isAuthMiddleware
+    const userId  = req.user._id; // sacamos el usuario de la petición, después de pasar por el middleware isAuthMiddleware
     const filePath = `./uploads/${userId}/${file}`; // ruta donde se encuentra el archivo
     if (!fs.existsSync(filePath)) { // si el archivo no existe
         res.status(404).send("File not found"); // devolvemos un error

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const API_URL = 'http://localhost:3010/uploads/' // ruta donde se almacenan los archivos. Pasar a archivo .env para poder reemplazarlo en todos los archivos
 

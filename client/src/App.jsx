@@ -1,14 +1,14 @@
-import Upload from "./components/Upload";
-import Show from "./components/Show";
+import Upload from "./Upload";
+import Show from "./Show";
 import './App.css'
 import { useEffect, useState } from "react";
+
+const API_URL = 'http://localhost:3010/uploads/'
 
 /**
  * Componente principal
  * Se encarga de mostrar los archivos subidos y de subir nuevos archivos
  */
-
-const API_URL = 'http://localhost:3010/uploads/'
 function App() {
     const [uploadedFiles, setUploadedFiles] = useState([]) // lista de archivos subidos
     useEffect(() => { // cuando se monta el componente, obtenemos la lista de archivos subidos
@@ -20,6 +20,7 @@ function App() {
      */
     async function getFiles() {
         const response = await fetch(API_URL) // obtenemos la lista de archivos subidos. Modificar en caso de usar autenticación por token o cookies
+        
         const data = await response.json()
         console.log("files", data)
         setUploadedFiles(data) // actualizamos la lista

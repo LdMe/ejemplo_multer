@@ -1,9 +1,11 @@
 import { useState } from 'react'
+
 const API_URL = 'http://localhost:3010/upload/'
+
 /**
    * Componente que permite subir un archivo. Una vez seleccionado el archivo, muestra una vist previa en caso de imágen o el nombre del archivo en caso de otro tipo de archivo
 */
-function Upload({onUpload}) {
+function Upload({ onUpload }) {
   const [uploadFile, setUploadFile] = useState(null) // archivo a subir. Usado par la vista previa
   const [fileName, setFileName] = useState("") // nombre del archivo. Usado para modificar el nombre del archivo
 
